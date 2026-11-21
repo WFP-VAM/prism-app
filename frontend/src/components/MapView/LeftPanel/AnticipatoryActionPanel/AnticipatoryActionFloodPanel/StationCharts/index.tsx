@@ -9,7 +9,6 @@ import {
   Menu,
   MenuItem,
   Paper,
-  Radio,
   Table,
   TableBody,
   TableCell,
@@ -34,6 +33,7 @@ import {
 } from 'context/anticipatoryAction/AAFloodStateSlice/floodStatus';
 import {
   AAFloodPhase,
+  AAFloodRiskLevelType,
   AAFloodSeverityKey,
   FloodStation,
   FloodTriggerCombination,
@@ -48,11 +48,7 @@ import {
 import { useSafeTranslation } from 'i18n';
 import sortBy from 'lodash/sortBy';
 import { cyanBlue } from 'muiTheme';
-import type {
-  CSSProperties,
-  MouseEvent as ReactMouseEvent,
-  ReactElement,
-} from 'react';
+import type { MouseEvent as ReactMouseEvent, ReactElement } from 'react';
 import { useMemo, useRef, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { createPortal } from 'react-dom';
@@ -164,6 +160,7 @@ const dailyExceedancePlugin = {
     ctx.restore();
   },
   afterDraw(chart: any) {
+    drawThresholdCallout(chart);
     const spec = chart.options?.dailyExceedance as DailyExceedance | undefined;
     if (!spec?.values.length) {
       return;
@@ -290,6 +287,46 @@ const dailyExceedancePlugin = {
   },
 };
 
+const CHART_FONT = 'Roboto, Helvetica, Arial, sans-serif';
+
+function drawThresholdCallout(chart: any) {
+  const callout = chart.options?.thresholdCallout as
+    | { value: number; color: string; text: string }
+    | undefined;
+  const yScale = chart.scales?.['y-axis-0'];
+  const area = chart.chartArea;
+  if (!callout || !yScale || !area) {
+    return;
+  }
+  const y = yScale.getPixelForValue(callout.value);
+  if (y < area.top + 4 || y > area.bottom - 2) {
+    return;
+  }
+  const { ctx } = chart;
+  ctx.save();
+  ctx.font = `11px ${CHART_FONT}`;
+  const textW = ctx.measureText(callout.text).width;
+  const padX = 4;
+  const boxW = textW + padX * 2;
+  const boxH = 16;
+  if (boxW > area.right - area.left - 36) {
+    ctx.restore();
+    return;
+  }
+  const x = area.right - boxW - 4;
+  const top = Math.max(
+    Math.min(y - boxH - 3, area.bottom - boxH - 2),
+    area.top + 2,
+  );
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.fillRect(x, top, boxW, boxH);
+  ctx.fillStyle = callout.color;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(callout.text, x + padX, top + boxH / 2);
+  ctx.restore();
+}
+
 if (!(Chart as any).__prismDailyExceedance) {
   Chart.plugins.register(dailyExceedancePlugin);
   (Chart as any).__prismDailyExceedance = true;
@@ -297,11 +334,28 @@ if (!(Chart as any).__prismDailyExceedance) {
 
 const forecastWindow = ForecastWindowPerCountry.mozambique;
 const SEVERITY_ORDER: AAFloodSeverityKey[] = ['bankfull', 'moderate', 'severe'];
+const TABLE_SEVERITY_ORDER: AAFloodSeverityKey[] = [
+  'severe',
+  'moderate',
+  'bankfull',
+];
+const BANKFULL_RADIO = '#E6B400';
 const SEVERITY_NAME: Record<AAFloodSeverityKey, string> = {
   bankfull: 'Bankfull',
   moderate: 'Moderate',
   severe: 'Severe',
 };
+
+function statusChipStyle(level: AAFloodRiskLevelType, selected: boolean) {
+  const color = getFloodRiskColor(level);
+  const darkText = level === 'Bankfull' || level === 'Not exceeded';
+  const border = level === 'Bankfull' ? '#FFF503' : color;
+  return {
+    backgroundColor: selected ? color : '#fff',
+    color: darkText ? '#101010' : selected ? '#fff' : color,
+    borderColor: border,
+  };
+}
 
 type ProbabilityPoint = {
   time: string;
@@ -435,12 +489,19 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
+    containerFit: {
+      height: 'auto',
+      maxHeight: 'calc(100vh - 130px)',
+    },
     paper: {
       height: '100%',
       minHeight: 0,
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
+    },
+    paperFit: {
+      height: 'auto',
     },
     header: {
       display: 'flex',
@@ -449,12 +510,13 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '1rem 1rem 0 1rem',
     },
     title: {
-      fontWeight: 'bold',
-      fontSize: '1.2rem',
+      fontWeight: 700,
+      fontSize: '1.375rem',
+      color: '#101010',
       display: 'flex',
       alignItems: 'center',
       gap: '0.5rem',
-      paddingBottom: '0.5rem',
+      lineHeight: 1.2,
     },
     closeButton: {
       marginTop: '-1rem',
@@ -489,6 +551,11 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '0.5rem',
       overflow: 'auto',
     },
+    tabPanelOpen: {
+      flex: '0 1 auto',
+      border: 'none',
+      overflow: 'visible',
+    },
     chartContainer: {
       height: '254px',
       position: 'relative',
@@ -516,12 +583,15 @@ const useStyles = makeStyles((theme: Theme) =>
     actionButton: {
       textTransform: 'none',
       fontSize: '0.9rem',
-      color: '#fff',
+      color: '#111',
+      '& .MuiButton-startIcon': {
+        color: '#111',
+      },
       '&:hover': {
         backgroundColor: 'rgba(255, 255, 255, 0.16)',
       },
       '&.Mui-disabled': {
-        color: 'rgba(255, 255, 255, 0.7)',
+        color: 'rgba(0, 0, 0, 0.38)',
       },
     },
     tableContainer: {
@@ -557,51 +627,23 @@ const useStyles = makeStyles((theme: Theme) =>
     titleRow: {
       display: 'flex',
       alignItems: 'center',
-      gap: '0.75rem',
+      flexWrap: 'wrap',
+      gap: '0.5rem',
     },
     statusChip: {
-      fontSize: '0.75rem',
-      fontWeight: 600,
-      borderRadius: 16,
-      padding: '4px 10px',
-      lineHeight: 1.4,
+      fontFamily: 'inherit',
+      fontSize: 14,
+      fontWeight: 700,
+      borderRadius: 999,
+      padding: '5px 14px',
+      lineHeight: 1.25,
       whiteSpace: 'nowrap',
-    },
-    phaseToggle: {
-      display: 'flex',
-      gap: 8,
-      padding: '0 1rem 0.75rem',
-    },
-    phaseButton: {
-      textTransform: 'none',
-      borderRadius: 20,
-      minWidth: 110,
-      border: '1px solid var(--phase-ink, #D4D4D4)',
-      color: 'var(--phase-ink, #555)',
-      backgroundColor: '#fff',
-      fontSize: 13,
-      '&&:hover': {
-        backgroundColor: '#fff',
-        color: 'var(--phase-ink, #555)',
-        borderColor: 'var(--phase-ink, #D4D4D4)',
-      },
-    },
-    phaseReadiness: {
-      borderStyle: 'dashed',
-    },
-    phaseSelected: {
-      backgroundColor: 'var(--phase-color, #FF8C21)',
-      color: 'var(--phase-text, #fff)',
-      borderColor: 'var(--phase-color, #FF8C21)',
-      fontWeight: 600,
-      '&&:hover': {
-        backgroundColor: 'var(--phase-color, #FF8C21)',
-        color: 'var(--phase-text, #fff)',
-        filter: 'brightness(0.92)',
-      },
+      border: '1.5px solid transparent',
+      cursor: 'pointer',
+      color: '#101010',
     },
     comboTable: {
-      marginTop: '0.5rem',
+      marginTop: '0.25rem',
     },
     comboHeader: {
       fontWeight: 600,
@@ -614,23 +656,32 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '4px 8px',
       color: '#111',
     },
+    comboGap: {
+      textTransform: 'capitalize',
+    },
     chartSentence: {
       fontSize: '0.85rem',
+      lineHeight: 1.35,
       color: '#222',
       margin: '0.25rem 0 0.5rem',
+      minHeight: '2.7em',
     },
     chartWindow: {
       fontSize: '0.8rem',
       fontWeight: 600,
+      lineHeight: 1.3,
       textAlign: 'center',
       marginBottom: '0.25rem',
+      minHeight: '1.3em',
     },
     chartLegend: {
       display: 'flex',
       flexWrap: 'wrap',
       gap: '10px 14px',
-      fontSize: '0.7rem',
-      color: '#333',
+      fontFamily: CHART_FONT,
+      fontSize: 12,
+      fontWeight: 400,
+      color: '#4a4a4a',
       margin: '6px 0 0.35rem',
     },
     legendItem: {
@@ -646,24 +697,6 @@ const useStyles = makeStyles((theme: Theme) =>
 interface StationChartsProps {
   station: FloodStation;
   onClose?: () => void;
-}
-
-function phaseButtonVars(
-  combinations: FloodTriggerCombination[] | undefined,
-  phase: AAFloodPhase,
-): CSSProperties {
-  const level = phaseStatusLevel(combinations, phase);
-  const fill = level
-    ? getFloodRiskColor(level)
-    : AAFloodColors.riskLevels.noData;
-  const darkText = level === 'Bankfull' || level === 'Not exceeded';
-  // Bankfull yellow disappears on white. Outline uses a darker gold.
-  const ink = level === 'Bankfull' ? '#6F5600' : fill;
-  return {
-    '--phase-color': fill,
-    '--phase-ink': ink,
-    '--phase-text': darkText ? '#1a1a1a' : '#fff',
-  } as CSSProperties;
 }
 
 function StationCharts({ station, onClose }: StationChartsProps) {
@@ -707,11 +740,13 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const phaseCombinations = (stationSummary?.combinations ?? []).filter(
     combo => combo.phase === viewPhase,
   );
+  const severityForPhase = (phase: AAFloodPhase): AAFloodSeverityKey => {
+    const focus = focusCombination(stationSummary?.combinations, phase);
+    return focus?.exceeded ? focus.severity : 'bankfull';
+  };
   const visibleSeverities = selectionReady
     ? phaseSelection.severities
-    : [
-        focusCombination(stationSummary?.combinations, viewPhase)?.severity,
-      ].filter((severity): severity is AAFloodSeverityKey => Boolean(severity));
+    : [severityForPhase(viewPhase)];
   const visibleCombinations = SEVERITY_ORDER.map(severity =>
     phaseCombinations.find(combo => combo.severity === severity),
   ).filter(
@@ -727,20 +762,20 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const isLegacySummary = Boolean(stationSummary?.legacy);
 
   const selectPhase = (phase: AAFloodPhase) => {
-    const focus = focusCombination(stationSummary?.combinations, phase);
     setPhaseSelection({
       statusKey,
       phase,
-      severities: focus ? [focus.severity] : [],
+      severities: [severityForPhase(phase)],
     });
   };
   const selectSeverity = (severity: AAFloodSeverityKey) => {
-    const already =
-      visibleSeverities.length === 1 && visibleSeverities[0] === severity;
+    if (visibleSeverities.length === 1 && visibleSeverities[0] === severity) {
+      return;
+    }
     setPhaseSelection({
       statusKey,
       phase: viewPhase,
-      severities: already ? [] : [severity],
+      severities: [severity],
     });
   };
 
@@ -766,11 +801,19 @@ function StationCharts({ station, onClose }: StationChartsProps) {
       severe: thresholdSevere,
     };
     const shownSeverities = usesCombinationWindows
-      ? SEVERITY_ORDER.filter(
-          severity =>
-            visibleSeverities.includes(severity) &&
-            phaseCombinations.some(combo => combo.severity === severity),
-        )
+      ? SEVERITY_ORDER.filter(severity => {
+          if (!visibleSeverities.includes(severity)) {
+            return false;
+          }
+          const combo = phaseCombinations.find(
+            item => item.severity === severity,
+          );
+          const value =
+            combo?.dischargeThreshold != null
+              ? combo.dischargeThreshold
+              : dischargeFallback[severity];
+          return value != null && Number.isFinite(value);
+        })
       : SEVERITY_ORDER;
     const thresholdLabel: Record<AAFloodSeverityKey, string> = {
       bankfull: t('Bankfull threshold'),
@@ -1222,7 +1265,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   const probabilityByDay = new Map(
     (probs ?? []).map(point => [point.time.slice(0, 10), point]),
   );
-  const selectedSeverity = highlighted?.severity;
+  const selectedSeverity = highlighted?.severity ?? visibleSeverities[0];
   const dailyValues = forecastSeries.map(point => {
     const match = probabilityByDay.get(point.time.slice(0, 10));
     if (!match || !selectedSeverity) {
@@ -1306,28 +1349,67 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   }),
           }
         : undefined;
+    const dischargeFallback: Record<AAFloodSeverityKey, number | undefined> =
+      probs?.[0]
+        ? {
+            bankfull: probs[0].thresholdBankfull,
+            moderate: probs[0].thresholdModerate,
+            severe: probs[0].thresholdSevere,
+          }
+        : {
+            bankfull: undefined,
+            moderate: undefined,
+            severe: undefined,
+          };
+    const thresholdValue =
+      highlighted?.dischargeThreshold ??
+      (selectedSeverity ? dischargeFallback[selectedSeverity] : undefined);
+    const thresholdCallout =
+      selectedSeverity && thresholdValue != null
+        ? {
+            value: thresholdValue,
+            color:
+              selectedSeverity === 'bankfull'
+                ? BANKFULL_RADIO
+                : AAFloodColors.chart[selectedSeverity].solid,
+            text: `${t(`${SEVERITY_NAME[selectedSeverity]} threshold`)} ${Math.round(thresholdValue).toLocaleString('en-US')}`,
+          }
+        : undefined;
 
     return {
       ...hydrographOptions,
       legend: { display: false },
-      layout: { padding: { bottom: 62, right: 18, left: 4 } },
+      layout: {
+        padding: { bottom: 62, right: 18, left: 4 },
+      },
       dailyExceedance,
+      thresholdCallout,
       scales: {
         xAxes: [
           {
             display: true,
             offset: true,
             gridLines: { display: false },
-            ticks: { display: false },
+            ticks: {
+              display: false,
+              fontFamily: CHART_FONT,
+              fontSize: 12,
+            },
           },
         ],
         yAxes: [
           {
             display: true,
-            ticks: { beginAtZero: true },
+            ticks: {
+              beginAtZero: true,
+              fontFamily: CHART_FONT,
+              fontSize: 12,
+            },
             scaleLabel: {
               display: true,
               labelString: t('Discharge (m³/s)'),
+              fontFamily: CHART_FONT,
+              fontSize: 12,
             },
           },
         ],
@@ -1341,6 +1423,7 @@ function StationCharts({ station, onClose }: StationChartsProps) {
     highlighted,
     dailyValues,
     forecastSeries,
+    probs,
     t,
   ]);
 
@@ -1746,32 +1829,61 @@ function StationCharts({ station, onClose }: StationChartsProps) {
   }
 
   return mount(
-    <div className={classes.container}>
-      <Paper className={classes.paper}>
+    <div
+      className={`${classes.container} ${
+        usesCombinationWindows && viewMode === 'chart'
+          ? classes.containerFit
+          : ''
+      }`}
+    >
+      <Paper
+        className={`${classes.paper} ${
+          usesCombinationWindows && viewMode === 'chart' ? classes.paperFit : ''
+        }`}
+      >
         <div className={classes.header}>
           <div className={classes.titleRow}>
             <Typography className={classes.title}>
               {station.station_name}
             </Typography>
-            {parsedStatus.id && (
+            {usesCombinationWindows && !isLegacySummary ? (
+              (['activation', 'readiness'] as const).map(phase => {
+                const level = phaseStatusLevel(
+                  stationSummary?.combinations,
+                  phase,
+                );
+                if (!level) {
+                  return null;
+                }
+                const selected = viewPhase === phase;
+                return (
+                  <button
+                    key={phase}
+                    type="button"
+                    className={classes.statusChip}
+                    aria-pressed={selected}
+                    onClick={() => selectPhase(phase)}
+                    style={statusChipStyle(level, selected)}
+                  >
+                    {`${t(phase === 'activation' ? 'Active' : 'Readiness')} · ${t(level)}`}
+                  </button>
+                );
+              })
+            ) : (
               <span
                 className={classes.statusChip}
-                style={{
-                  backgroundColor: getFloodRiskColor(parsedStatus.severity),
-                  color:
-                    parsedStatus.severity === 'Bankfull' ||
-                    parsedStatus.severity === 'Not exceeded'
-                      ? '#1a1a1a'
-                      : '#fff',
-                }}
+                style={statusChipStyle(
+                  parsedStatus.id ? parsedStatus.severity : 'Not exceeded',
+                  true,
+                )}
               >
                 {parsedStatus.phase
                   ? `${t(
                       parsedStatus.phase === 'activation'
-                        ? 'Activation'
+                        ? 'Active'
                         : 'Readiness',
-                    )} · ${t(parsedStatus.severity)}`
-                  : t(parsedStatus.severity)}
+                    )} · ${t(parsedStatus.id ? parsedStatus.severity : 'Not exceeded')}`
+                  : t(parsedStatus.id ? parsedStatus.severity : 'Not exceeded')}
               </span>
             )}
           </div>
@@ -1785,40 +1897,6 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             </IconButton>
           )}
         </div>
-
-        {usesCombinationWindows && !isLegacySummary && (
-          <div
-            className={classes.phaseToggle}
-            role="group"
-            aria-label={t('Phase')}
-          >
-            <Button
-              type="button"
-              className={`${classes.phaseButton} ${classes.phaseReadiness} ${
-                viewPhase === 'readiness' ? classes.phaseSelected : ''
-              }`}
-              style={phaseButtonVars(stationSummary?.combinations, 'readiness')}
-              aria-pressed={viewPhase === 'readiness'}
-              onClick={() => selectPhase('readiness')}
-            >
-              {t('Readiness')}
-            </Button>
-            <Button
-              type="button"
-              className={`${classes.phaseButton} ${
-                viewPhase === 'activation' ? classes.phaseSelected : ''
-              }`}
-              style={phaseButtonVars(
-                stationSummary?.combinations,
-                'activation',
-              )}
-              aria-pressed={viewPhase === 'activation'}
-              onClick={() => selectPhase('activation')}
-            >
-              {t('Activation')}
-            </Button>
-          </div>
-        )}
 
         {!usesCombinationWindows && (
           <div className={classes.tabs}>
@@ -1840,12 +1918,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
         )}
 
         <div
-          className={classes.tabPanel}
-          style={
-            usesCombinationWindows
-              ? { borderTop: '1px solid #D4D4D4' }
-              : undefined
-          }
+          className={`${classes.tabPanel} ${
+            usesCombinationWindows ? classes.tabPanelOpen : ''
+          }`}
         >
           {usesCombinationWindows && (
             <>
@@ -1854,11 +1929,9 @@ function StationCharts({ station, onClose }: StationChartsProps) {
                   <Typography className={classes.chartSentence}>
                     {chartSentence}
                   </Typography>
-                  {chartWindowTitle && (
-                    <Typography className={classes.chartWindow}>
-                      {chartWindowTitle}
-                    </Typography>
-                  )}
+                  <Typography className={classes.chartWindow}>
+                    {chartWindowTitle || '\u00a0'}
+                  </Typography>
                   <div className={classes.chartContainer}>
                     {hydrographData && (
                       <Line
@@ -2088,102 +2161,118 @@ function StationCharts({ station, onClose }: StationChartsProps) {
               </TableContainer>
             </>
           )}
-          {usesCombinationWindows &&
-            viewMode === 'chart' &&
-            (phaseCombinations.length === 0 ? (
-              <Typography className={classes.noDataMessage}>
-                {t('No combinations for this phase')}
-              </Typography>
-            ) : (
-              <TableContainer className={classes.comboTable}>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell className={classes.comboHeader}>
-                        {t('Severity')}
-                      </TableCell>
-                      <TableCell className={classes.comboHeader}>
-                        {t('Window')}
-                      </TableCell>
-                      <TableCell className={classes.comboHeader}>
-                        {t('Trigger')}
-                      </TableCell>
-                      <TableCell className={classes.comboHeader}>
-                        {t('Window avg')}
-                      </TableCell>
-                      <TableCell className={classes.comboHeader}>
-                        {t('Gap to trigger')}
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {SEVERITY_ORDER.map(severity => {
-                      const combo = phaseCombinations.find(
-                        item => item.severity === severity,
-                      );
-                      if (!combo) {
-                        return null;
-                      }
-                      const checked = visibleSeverities.includes(severity);
-                      const gap =
-                        combo.trigger == null
-                          ? null
-                          : combo.trigger - combo.avgProbability;
-                      let gapText = '-';
-                      if (combo.exceeded || (gap != null && gap <= 0)) {
-                        gapText = t('exceeded');
-                      } else if (gap != null) {
-                        gapText = t('{{gap}} to go', {
-                          gap: gap.toFixed(1),
-                        });
-                      }
-                      return (
-                        <TableRow
-                          key={`${combo.phase}-${severity}`}
-                          style={{
-                            backgroundColor: checked
-                              ? AAFloodColors.chart[severity].fill
-                              : undefined,
-                          }}
-                        >
-                          <TableCell className={classes.comboCell}>
-                            <Radio
-                              size="small"
-                              checked={checked}
-                              onClick={() => selectSeverity(severity)}
+          {usesCombinationWindows && viewMode === 'chart' && (
+            <TableContainer className={classes.comboTable}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell className={classes.comboHeader}>
+                      {t('Severity')}
+                    </TableCell>
+                    <TableCell className={classes.comboHeader}>
+                      {t('Window')}
+                    </TableCell>
+                    <TableCell className={classes.comboHeader}>
+                      {t('Trigger')}
+                    </TableCell>
+                    <TableCell className={classes.comboHeader}>
+                      {t('Window average')}
+                    </TableCell>
+                    <TableCell className={classes.comboHeader}>
+                      {t('Gap to trigger')}
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {TABLE_SEVERITY_ORDER.map(severity => {
+                    const combo = phaseCombinations.find(
+                      item => item.severity === severity,
+                    );
+                    const checked = visibleSeverities.includes(severity);
+                    const gap =
+                      combo?.trigger == null
+                        ? null
+                        : combo.trigger - combo.avgProbability;
+                    let gapText = '-';
+                    if (
+                      combo &&
+                      (combo.exceeded || (gap != null && gap <= 0))
+                    ) {
+                      gapText = t('exceeded');
+                    } else if (gap != null) {
+                      gapText = t('{{gap}} to go', {
+                        gap: gap.toFixed(1),
+                      });
+                    }
+                    const mark =
+                      severity === 'bankfull'
+                        ? BANKFULL_RADIO
+                        : AAFloodColors.chart[severity].solid;
+                    return (
+                      <TableRow
+                        key={`${viewPhase}-${severity}`}
+                        hover
+                        onClick={() => selectSeverity(severity)}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <TableCell className={classes.comboCell}>
+                          <button
+                            type="button"
+                            aria-pressed={checked}
+                            aria-label={t(SEVERITY_NAME[severity])}
+                            onClick={() => selectSeverity(severity)}
+                            style={{
+                              width: 16,
+                              height: 16,
+                              boxSizing: 'border-box',
+                              borderRadius: '50%',
+                              border: `2px solid ${mark}`,
+                              backgroundColor: '#fff',
+                              padding: 0,
+                              marginRight: 8,
+                              verticalAlign: 'middle',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            <span
                               style={{
-                                color: AAFloodColors.chart[severity].solid,
-                                padding: 4,
-                              }}
-                              inputProps={{
-                                'aria-label': t(SEVERITY_NAME[severity]),
+                                width: 8,
+                                height: 8,
+                                borderRadius: '50%',
+                                backgroundColor: checked ? mark : 'transparent',
                               }}
                             />
-                            {t(SEVERITY_NAME[severity])}
-                          </TableCell>
-                          <TableCell className={classes.comboCell}>
-                            {combo.windowBegin && combo.windowEnd
-                              ? `${dayMon(combo.windowBegin)} – ${dayMon(combo.windowEnd)}`
-                              : '-'}
-                          </TableCell>
-                          <TableCell className={classes.comboCell}>
-                            {combo.trigger == null
-                              ? '-'
-                              : `${combo.trigger.toFixed(1)}%`}
-                          </TableCell>
-                          <TableCell className={classes.comboCell}>
-                            {`${combo.avgProbability.toFixed(1)}%`}
-                          </TableCell>
-                          <TableCell className={classes.comboCell}>
-                            {gapText}
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            ))}
+                          </button>
+                          {t(SEVERITY_NAME[severity])}
+                        </TableCell>
+                        <TableCell className={classes.comboCell}>
+                          {combo?.windowBegin && combo.windowEnd
+                            ? `${dayMon(combo.windowBegin)} – ${dayMon(combo.windowEnd)}`
+                            : '-'}
+                        </TableCell>
+                        <TableCell className={classes.comboCell}>
+                          {combo?.trigger == null
+                            ? '-'
+                            : `${combo.trigger.toFixed(1)}%`}
+                        </TableCell>
+                        <TableCell className={classes.comboCell}>
+                          {combo ? `${combo.avgProbability.toFixed(1)}%` : '-'}
+                        </TableCell>
+                        <TableCell
+                          className={`${classes.comboCell} ${classes.comboGap}`}
+                        >
+                          {gapText}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </div>
 
         <div className={classes.actionButtons}>
@@ -2199,7 +2288,11 @@ function StationCharts({ station, onClose }: StationChartsProps) {
             className={classes.actionButton}
             type="button"
             startIcon={
-              isDownloading ? <CircularProgress size={16} /> : <GetApp />
+              isDownloading ? (
+                <CircularProgress size={16} style={{ color: '#111' }} />
+              ) : (
+                <GetApp />
+              )
             }
             onClick={openDownloadMenu}
             disabled={isDownloading}

@@ -714,6 +714,7 @@
   "Below Normal": "Abaixo do Normal",
   "Day {{start}}–{{end}}": "Dia {{start}}–{{end}}",
   "Window avg": "Média da janela",
+  "Window average": "Média da janela",
   "Gap to trigger": "Diferença para o limiar",
   "{{percent}}% of the ensemble exceeds the {{severity}} threshold on average across {{start}} – {{end}}, above the {{trigger}}% trigger.": "{{percent}}% do conjunto excede o limiar de {{severity}} em média entre {{start}} e {{end}}, acima do accionador de {{trigger}}%.",
   "{{percent}}% of the ensemble exceeds the {{severity}} threshold on average across {{start}} – {{end}}, below the {{trigger}}% trigger.": "{{percent}}% do conjunto excede o limiar de {{severity}} em média entre {{start}} e {{end}}, abaixo do accionador de {{trigger}}%.",
