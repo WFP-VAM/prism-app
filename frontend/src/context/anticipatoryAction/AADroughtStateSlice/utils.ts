@@ -362,7 +362,7 @@ export function calculateCombinedAAMapData(
       .map(district => {
         const windowOneData = renderedDistricts['Window 1'][district]?.[0];
         const windowTwoData = renderedDistricts['Window 2'][district]?.[0];
-        // a district can be hidden by filters in one window only
+        // a district may be present in only one window's data
         if (!windowOneData || !windowTwoData) {
           const data = windowOneData ?? windowTwoData;
           return data ? [district, data] : null;
@@ -397,6 +397,7 @@ export function getAAMapData(
   }
   return Object.fromEntries(
     Object.entries(renderedDistricts[selectedWindow])
+      // safety check: every district should have at least one entry
       .filter(([, values]) => values.length > 0)
       .map(([dist, values]) => [dist, values[0]]),
   );

@@ -200,7 +200,7 @@ const buildAACategoryPhaseMap = (
   filtered: {
     color: colors.filtered.background,
     iconProps: {
-      topText: 'x',
+      topText: '-',
       bottomText: '-',
       color: colors.filtered.text,
     },
@@ -384,6 +384,19 @@ export function AADataSeverityOrder(
   return catIndex * 10 + phaseBonus;
 }
 
+// Special rows that can't be unticked in the filters
+const NON_SEVERITY_CATEGORIES: AACategoryType[] = ['na', 'ny', 'filtered'];
+
+// True when a severity category is unticked, i.e. 'filtered' districts may appear
+export const isAnyCategoryFiltered = (
+  categories?: Partial<Record<AACategoryType, boolean>>,
+) =>
+  Object.entries(categories ?? {}).some(
+    ([category, enabled]) =>
+      !NON_SEVERITY_CATEGORIES.includes(category as AACategoryType) &&
+      enabled === false,
+  );
+
 // Legend entries for the country; categories unticked in the filters are left out
 export const getLegendPhases = (
   categories?: Partial<Record<AACategoryType, boolean>>,
@@ -416,10 +429,7 @@ export const getLegendPhases = (
     });
 
   // grey districts only appear once a category is unticked
-  const isFiltered = config.categories.some(
-    cat => categories?.[cat.id] === false,
-  );
-  return isFiltered
+  return isAnyCategoryFiltered(categories)
     ? [
         ...phases,
         {
@@ -457,12 +467,7 @@ export function getAASummaryRows({
   renderedDistricts,
 }: GetAASummaryRowsParams): AASummaryRow[] {
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
-  // only severity categories produce 'filtered' districts
-  const isFiltered = rowCategories.some(
-    x =>
-      !['na', 'ny', 'filtered'].includes(x.category) &&
-      categories[x.category] === false,
-  );
+  const isFiltered = isAnyCategoryFiltered(categories);
   return rowCategories
     .filter(x =>
       x.category === 'filtered' ? isFiltered : categories[x.category],

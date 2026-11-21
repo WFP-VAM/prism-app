@@ -2,12 +2,24 @@ import {
   buildAASummaryCsv,
   DEFAULT_AA_DROUGHT_COLORS,
   getAASummaryRows,
+  isAnyCategoryFiltered,
   mergeAADroughtColors,
 } from './utils';
 
 type CsvParams = Parameters<typeof getAASummaryRows>[0] & {
   t: (key: string) => string;
 };
+
+describe('isAnyCategoryFiltered', () => {
+  it('is true only when a severity category is unticked', () => {
+    expect(isAnyCategoryFiltered(undefined)).toBe(false);
+    expect(isAnyCategoryFiltered({ Severe: true, Mild: true })).toBe(false);
+    expect(
+      isAnyCategoryFiltered({ na: false, ny: false, filtered: false }),
+    ).toBe(false);
+    expect(isAnyCategoryFiltered({ Severe: true, Normal: false })).toBe(true);
+  });
+});
 
 describe('getAASummaryRows + buildAASummaryCsv', () => {
   const identity = (s: string) => s;
