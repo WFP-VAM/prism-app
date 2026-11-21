@@ -70,22 +70,26 @@ export const isLayerKey = (layerKey: string | MenuGroup) => {
 };
 
 /**
- * Check if a layer is without group, or is the main layer in the group. Non-main
- * layers also count towards dates
- * @param layerId
- * @param layers
+ * Whether a selected layer should contribute its dates to the timeline and
+ * the default date.
+ *
+ * Ungrouped layers and a group's main layer always count. A non-main layer
+ * counts only when that group's main layer is not also selected.
  */
-export const isMainLayer = (layerId: string, layers: LayerType[]) =>
-  !layers.some(sl =>
-    sl.group?.layers?.some(
-      l =>
-        l.id === layerId &&
-        !l.main &&
-        sl.group?.layers?.some(
-          gl => gl.main && layers.some(selected => selected.id === gl.id),
-        ),
-    ),
-  );
+export const shouldIncludeLayerDates = (
+  layerId: string,
+  layers: LayerType[],
+) => {
+  const selectedIds = new Set(layers.map(layer => layer.id));
+  return !layers.some(({ group }) => {
+    const item = group?.layers?.find(layer => layer.id === layerId);
+    return (
+      !!item &&
+      !item.main &&
+      !!group?.layers.some(layer => layer.main && selectedIds.has(layer.id))
+    );
+  });
+};
 
 /**
  * Decorator to mark a property on a class type as optional. This allows us to get a list of all required keys at

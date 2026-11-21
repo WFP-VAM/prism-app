@@ -8,9 +8,9 @@ import {
   AnticipatoryAction,
   AvailableDates,
   DateItem,
-  isMainLayer,
   LayerKey,
   LayerType,
+  shouldIncludeLayerDates,
 } from 'config/types';
 import {
   AALayerIds,
@@ -213,7 +213,7 @@ const useLayers = () => {
     () =>
       selectedLayers
         .filter(layer => isDateCompatibleLayer(layer, serverAvailableDates))
-        .filter(layer => isMainLayer(layer.id, selectedLayers))
+        .filter(layer => shouldIncludeLayerDates(layer.id, selectedLayers))
         .map(layer => ({
           ...layer,
           dateItems: getPossibleDatesForLayer(layer, serverAvailableDates)
