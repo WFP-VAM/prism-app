@@ -1,6 +1,7 @@
 import { Input, makeStyles, Typography } from '@material-ui/core';
 import { useSafeTranslation } from 'i18n';
 import DatePicker from 'react-datepicker';
+import { latestSelectableDate } from 'utils/date-utils';
 
 interface DateRangeSelectorProps {
   startDate: number | null;
@@ -22,10 +23,7 @@ function DateRangeSelector({
   const classes = useStyles();
   const { t } = useSafeTranslation();
 
-  // Allow future dates for layers that have them (e.g. forecasts).
-  const maxDate = new Date(
-    Math.max(Date.now(), ...availableDates.map(d => d.getTime())),
-  );
+  const maxDate = latestSelectableDate(availableDates);
 
   const handleStartDateChange = (date: Date | null) => {
     onStartDateChange(date?.getTime() || startDate);
