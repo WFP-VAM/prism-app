@@ -69,9 +69,9 @@ const useStyles = makeStyles(() =>
       fontSize: '0.85rem',
       color: '#6b6b6b',
       margin: '0.65rem 0 0.35rem',
+      whiteSpace: 'nowrap',
     },
     groupHint: {
-      display: 'block',
       fontWeight: 500,
     },
     trendTriangle: {
@@ -146,7 +146,7 @@ function AAFloodLegend() {
       {phases.map(({ label, hint, variant }) => (
         <div key={label}>
           <Typography className={classes.groupTitle}>
-            {t(label)}
+            {`${t(label)} `}
             <span className={classes.groupHint}>{t(hint)}</span>
           </Typography>
           {PHASE_SEVERITIES.map(severity => (
