@@ -45,13 +45,16 @@ export const datesAreEqualWithoutTime = (
 export const latestSelectableDate = (
   dates: ReadonlyArray<Date | number>,
   now: number = Date.now(),
-): Date =>
-  new Date(
-    dates.reduce((max, date) => {
-      const time = date instanceof Date ? date.getTime() : date;
-      return time > max ? time : max;
-    }, now),
-  );
+): Date => {
+  let max = now;
+  for (const date of dates) {
+    const time = date instanceof Date ? date.getTime() : date;
+    if (time > max) {
+      max = time;
+    }
+  }
+  return new Date(max);
+};
 
 function diffInDays(date1: Date, date2: Date) {
   // Normalize both dates to midnight UTC
