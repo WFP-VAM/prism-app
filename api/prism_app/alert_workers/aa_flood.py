@@ -210,7 +210,8 @@ def email_status_allow_list(metadata: dict[str, Any] | None) -> set[str]:
         return {
             status
             for status in allowed
-            if status and status not in BANKFULL_EMAIL_STATUSES
+            if status
+            and status not in BANKFULL_EMAIL_STATUSES
             and status != "not_exceeded"
         }
     return set(DEFAULT_EMAIL_STATUSES)
