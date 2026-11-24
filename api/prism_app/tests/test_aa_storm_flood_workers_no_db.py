@@ -592,9 +592,21 @@ def test_transform_last_flood() -> None:
 
 def test_email_status_allow_list_override() -> None:
     allowed = email_status_allow_list(
-        {"emailStatuses": ["bankfull", "activation_severe"]}
+        {
+            "emailStatuses": [
+                "bankfull",
+                "activation_bankfull",
+                "readiness_bankfull",
+                "activation_severe",
+            ]
+        }
     )
-    assert should_send_flood_email("bankfull", allowed) is True
+    assert "bankfull" not in allowed
+    assert "activation_bankfull" not in allowed
+    assert "readiness_bankfull" not in allowed
+    assert should_send_flood_email("bankfull", allowed) is False
+    assert should_send_flood_email("activation_bankfull", {"bankfull"}) is False
+    assert should_send_flood_email("activation_severe", allowed) is True
     assert should_send_flood_email("moderate", allowed) is False
 
 
@@ -882,6 +894,19 @@ def test_build_flood_payload_skips_when_only_filtered_stations(
             prism_url="https://prism.moz.wfp.org/",
             emails=["a@x.com"],
             station_summary_url="http://example/stations.csv",
+        )
+        is None
+    )
+    assert (
+        build_flood_payload(
+            client,
+            date_iso="2026-03-11T00:00:00Z",
+            trigger_status="activation_bankfull",
+            prism_url="https://prism.moz.wfp.org/",
+            emails=["a@x.com"],
+            station_summary_url="http://example/stations.csv",
+            is_test=True,
+            allowed_statuses={"activation_bankfull", "bankfull"},
         )
         is None
     )

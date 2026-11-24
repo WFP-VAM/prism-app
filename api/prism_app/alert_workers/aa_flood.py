@@ -23,7 +23,8 @@ DEFAULT_DISCLAIMER_AUTHORITY_HTML = "<strong>INGD (Instituto Nacional de Gestão
 DEFAULT_DISCLAIMER_AUTHORITY_PLAIN = (
     "INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres)"
 )
-# Bankfull stays off unless a row's metadata.emailStatuses lists it.
+# Bankfull emails stay off for now, including when metadata.emailStatuses
+# lists them. Severe and moderate still send.
 DEFAULT_EMAIL_STATUSES = frozenset(
     {
         "activation_severe",
@@ -32,6 +33,13 @@ DEFAULT_EMAIL_STATUSES = frozenset(
         "readiness_moderate",
         "severe",
         "moderate",
+    }
+)
+BANKFULL_EMAIL_STATUSES = frozenset(
+    {
+        "bankfull",
+        "activation_bankfull",
+        "readiness_bankfull",
     }
 )
 # Highest first. Legacy severity-only values rank with readiness of that severity.
@@ -199,7 +207,12 @@ def email_status_allow_list(metadata: dict[str, Any] | None) -> set[str]:
     raw = (metadata or {}).get("emailStatuses")
     if isinstance(raw, list) and raw:
         allowed = {normalize_flood_status(str(item)) for item in raw}
-        return {status for status in allowed if status and status != "not_exceeded"}
+        return {
+            status
+            for status in allowed
+            if status and status not in BANKFULL_EMAIL_STATUSES
+            and status != "not_exceeded"
+        }
     return set(DEFAULT_EMAIL_STATUSES)
 
 
@@ -208,7 +221,7 @@ def should_send_flood_email(
     allowed: set[str] | None = None,
 ) -> bool:
     status = normalize_flood_status(trigger)
-    if not status or status == "not_exceeded":
+    if not status or status == "not_exceeded" or status in BANKFULL_EMAIL_STATUSES:
         return False
     allow = allowed if allowed is not None else set(DEFAULT_EMAIL_STATUSES)
     return status in allow
@@ -397,6 +410,9 @@ def build_flood_payload(
             issue_iso=date_iso,
         )
     effective_status = station_groups[0]["status"] if station_groups else trigger_status
+    # Bankfull-only days do not send, including test sends.
+    if normalize_flood_status(effective_status) in BANKFULL_EMAIL_STATUSES:
+        return None
     if not is_test and not should_send_flood_email(effective_status, allowed):
         return None
     if is_test and not should_send_flood_email(effective_status, allowed):
