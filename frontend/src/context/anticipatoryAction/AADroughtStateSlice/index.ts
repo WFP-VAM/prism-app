@@ -36,6 +36,8 @@ const initialState: AnticipatoryActionState = {
       Normal: true,
       na: true,
       ny: true,
+      // not a user toggle: 'filtered' rows are shown only while a category is unticked
+      filtered: true,
     },
   },
   markers: [],

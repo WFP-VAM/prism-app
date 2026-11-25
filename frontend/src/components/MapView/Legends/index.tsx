@@ -13,6 +13,7 @@ import { leftPanelTabValueSelector } from 'context/leftPanelStateSlice';
 import { useSafeTranslation } from 'i18n';
 import { black, cyanBlue } from 'muiTheme';
 import { memo, useCallback, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useSelector } from 'react-redux';
 
 import LegendItemsList from './LegendItemsList';
@@ -85,12 +86,16 @@ const Legends = memo(() => {
         </IconButton>
       )}
 
-      {open && <LegendItemsList listStyle={classes.list} />}
+      {open &&
+        createPortal(
+          <LegendItemsList listStyle={classes.list} />,
+          document.body,
+        )}
     </>
   );
 });
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles(theme =>
   createStyles({
     triggerButton: {
       height: '2.5em',
@@ -99,9 +104,12 @@ const useStyles = makeStyles(() =>
       overflowX: 'hidden',
       overflowY: 'auto',
       maxHeight: '78vh', // same size as the left panel
-      position: 'absolute',
+      position: 'fixed',
       right: '1rem',
       top: 'calc(56px + 16px)',
+      // Outside the nav stacking context. The flood station panel sits at
+      // appBar, the nav itself at drawer + 1, so the legend stays under both.
+      zIndex: theme.zIndex.appBar - 1,
     },
     icon: { color: 'white', fontSize: '1.5rem' },
   }),

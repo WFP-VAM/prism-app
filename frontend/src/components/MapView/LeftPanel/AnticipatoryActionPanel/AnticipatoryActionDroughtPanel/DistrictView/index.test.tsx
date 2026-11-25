@@ -20,6 +20,7 @@ const filters: AnticipatoryActionState['filters'] = {
     Mild: true,
     na: true,
     ny: true,
+    filtered: true,
   },
   selectedIndex: '',
   selectedDate: '2023-05-01',
@@ -72,7 +73,7 @@ const out = {
     '2023-11-01': 'Nov',
   },
   transformed: {
-    '30': [
+    '40': [
       {
         category: 'Mild',
         date: '2023-08-01',
@@ -149,7 +150,7 @@ const out = {
         isOtherPhaseValid: true,
       },
     ],
-    '40': [
+    '50': [
       {
         category: 'Moderate',
         district: 'Changara',

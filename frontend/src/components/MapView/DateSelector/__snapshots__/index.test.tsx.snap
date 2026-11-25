@@ -177,7 +177,7 @@ exports[`renders as expected with a single date 1`] = `
           <div
             class="makeStyles-timeline-11 react-draggable"
             id="dateTimelineSelector"
-            style="transform: translate(-276px,0px);"
+            style="transform: translate(0px,0px);"
           >
             <div
               class="MuiGrid-root makeStyles-dateLabelContainer-10 MuiGrid-container"
