@@ -117,7 +117,7 @@ function AAFloodLegend() {
   const { stationSummaryData } = useSelector(AAFloodDataSelector);
   const { startDate } = useSelector(dateRangeSelector);
   // Summaries are cached across dates. Judge the day on screen, not leftovers
-  // from a synthetic date visited earlier.
+  // from a date visited earlier.
   const summaries = useFilteredFloodStations(stationSummaryData, startDate);
   // Wide legacy files have a severity only. Active and Readiness do not apply.
   const isLegacy =
