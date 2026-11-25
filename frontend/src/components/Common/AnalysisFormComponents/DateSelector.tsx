@@ -7,6 +7,7 @@ import {
 import { DateRangeRounded } from '@material-ui/icons';
 import { useSafeTranslation } from 'i18n';
 import DatePicker from 'react-datepicker';
+import { latestSelectableDate } from 'utils/date-utils';
 
 interface DateSelectorProps {
   selectedDate: number | null;
@@ -26,6 +27,8 @@ function DateSelector({
   const classes = useStyles();
   const { t } = useSafeTranslation();
 
+  const maxDate = latestSelectableDate(availableDates);
+
   const handleDateChange = (date: Date | null) => {
     onDateChange(date?.getTime() || selectedDate);
   };
@@ -40,7 +43,7 @@ function DateSelector({
         dateFormat="PP"
         selected={selectedDate ? new Date(selectedDate) : null}
         onChange={handleDateChange}
-        maxDate={new Date()}
+        maxDate={maxDate}
         todayButton={t('Today')}
         peekNextMonth
         showMonthDropdown
