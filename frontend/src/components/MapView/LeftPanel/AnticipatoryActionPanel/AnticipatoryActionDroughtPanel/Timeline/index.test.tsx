@@ -20,6 +20,7 @@ const filters: AnticipatoryActionState['filters'] = {
     Mild: true,
     na: true,
     ny: true,
+    filtered: true,
   },
   selectedIndex: '',
   selectedDate: '2024-02-01',
@@ -78,7 +79,7 @@ const out = {
         ['2023-11-01', 'Nov'],
       ],
       rows: {
-        '32': {
+        '43': {
           status: {
             category: 'Mild',
             phase: 'Ready',
@@ -131,7 +132,7 @@ const out = {
             },
           ],
         },
-        '33': {
+        '44': {
           status: {
             category: 'Mild',
             phase: 'Set',
@@ -184,7 +185,7 @@ const out = {
             },
           ],
         },
-        '42': {
+        '53': {
           status: {
             category: 'Moderate',
             phase: 'Ready',
@@ -222,7 +223,7 @@ const out = {
             },
           ],
         },
-        '43': {
+        '54': {
           status: {
             category: 'Moderate',
             phase: 'Set',
@@ -264,28 +265,28 @@ const out = {
     },
   },
   allRows: {
-    '32': {
+    '43': {
       status: {
         category: 'Mild',
         phase: 'Ready',
       },
       data: [],
     },
-    '33': {
+    '44': {
       status: {
         category: 'Mild',
         phase: 'Set',
       },
       data: [],
     },
-    '42': {
+    '53': {
       status: {
         category: 'Moderate',
         phase: 'Ready',
       },
       data: [],
     },
-    '43': {
+    '54': {
       status: {
         category: 'Moderate',
         phase: 'Set',

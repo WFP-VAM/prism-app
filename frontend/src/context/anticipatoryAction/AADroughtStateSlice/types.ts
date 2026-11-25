@@ -7,6 +7,8 @@ import React from 'react';
 export const AAcategory = [
   'ny',
   'na',
+  // computed only: the district has an activation, but in a category unticked in the filters
+  'filtered',
   'Normal',
   'Mild',
   'Moderate',
@@ -14,7 +16,7 @@ export const AAcategory = [
 ] as const;
 export type AACategoryType = (typeof AAcategory)[number];
 
-export const AAPhase = ['ny', 'na', 'Ready', 'Set'] as const;
+export const AAPhase = ['ny', 'na', 'filtered', 'Ready', 'Set'] as const;
 export type AAPhaseType = (typeof AAPhase)[number];
 export type Vulnerability = 'General Triggers' | 'Emergency Triggers';
 

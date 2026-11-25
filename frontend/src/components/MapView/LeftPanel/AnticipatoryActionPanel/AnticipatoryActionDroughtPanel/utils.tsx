@@ -30,6 +30,7 @@ import {
   AADroughtColorOverrides,
   AADroughtPalette,
   AAPhaseColor,
+  FILTERED_LABEL,
   getAADisplayLabel,
   getAADroughtCountryConfig,
 } from './utils/countryConfig';
@@ -39,6 +40,7 @@ import {
 export const DEFAULT_AA_DROUGHT_COLORS: AADroughtPalette = {
   na: { background: '#F1F1F1', text: 'black' },
   ny: { background: '#F1F1F1', text: 'black' },
+  filtered: { background: '#9E9E9E', text: 'black' },
   severe: {
     set: { background: '#831F00', text: 'white' },
     ready: { background: '#E63701', text: 'white' },
@@ -78,6 +80,10 @@ export const mergeAADroughtColors = (
   return {
     na: mergePhaseColor(DEFAULT_AA_DROUGHT_COLORS.na, overrides.na),
     ny: mergePhaseColor(DEFAULT_AA_DROUGHT_COLORS.ny, overrides.ny),
+    filtered: mergePhaseColor(
+      DEFAULT_AA_DROUGHT_COLORS.filtered,
+      overrides.filtered,
+    ),
     severe: mergeCategory('severe'),
     moderate: mergeCategory('moderate'),
     mild: mergeCategory('mild'),
@@ -189,6 +195,14 @@ const buildAACategoryPhaseMap = (
       topText: 'ny',
       bottomText: '-',
       color: colors.ny.text,
+    },
+  },
+  filtered: {
+    color: colors.filtered.background,
+    iconProps: {
+      topText: '-',
+      bottomText: '-',
+      color: colors.filtered.text,
     },
   },
   Severe: {
@@ -370,26 +384,61 @@ export function AADataSeverityOrder(
   return catIndex * 10 + phaseBonus;
 }
 
-export const getLegendPhases = () => {
+// Special rows that can't be unticked in the filters
+const NON_SEVERITY_CATEGORIES: AACategoryType[] = ['na', 'ny', 'filtered'];
+
+// True when a severity category is unticked, i.e. 'filtered' districts may appear
+export const isAnyCategoryFiltered = (
+  categories?: Partial<Record<AACategoryType, boolean>>,
+) =>
+  Object.entries(categories ?? {}).some(
+    ([category, enabled]) =>
+      !NON_SEVERITY_CATEGORIES.includes(category as AACategoryType) &&
+      enabled === false,
+  );
+
+// Legend entries for the country; categories unticked in the filters are left out
+export const getLegendPhases = (
+  categories?: Partial<Record<AACategoryType, boolean>>,
+) => {
   const config = getAADroughtCountryConfig();
 
-  return config.legendPhases.map(phase => {
-    let icon: ReactElement;
+  const phases = config.legendPhases
+    .filter(phase => {
+      const category = config.categories.find(
+        cat => cat.label === phase.severity,
+      )?.id;
+      return !category || categories?.[category] !== false;
+    })
+    .map(phase => {
+      let icon: ReactElement;
 
-    const category = config.categories.find(
-      cat => cat.label === phase.severity,
-    )?.id;
+      const category = config.categories.find(
+        cat => cat.label === phase.severity,
+      )?.id;
 
-    if (category) {
-      icon = getAAIcon(category, phase.phase as 'Ready' | 'Set', true);
-    } else if (phase.phase === 'No Action') {
-      icon = getAAIcon('na', 'na', true);
-    } else {
-      icon = getAAIcon('ny', 'ny', true);
-    }
+      if (category) {
+        icon = getAAIcon(category, phase.phase as 'Ready' | 'Set', true);
+      } else if (phase.phase === 'No Action') {
+        icon = getAAIcon('na', 'na', true);
+      } else {
+        icon = getAAIcon('ny', 'ny', true);
+      }
 
-    return { ...phase, icon };
-  });
+      return { ...phase, icon };
+    });
+
+  // grey districts only appear once a category is unticked
+  return isAnyCategoryFiltered(categories)
+    ? [
+        ...phases,
+        {
+          icon: getAAIcon('filtered', 'filtered', true),
+          phase: FILTERED_LABEL,
+          severity: undefined,
+        },
+      ]
+    : phases;
 };
 
 type AAWindowKey = (typeof AAWindowKeys)[number];
@@ -418,8 +467,11 @@ export function getAASummaryRows({
   renderedDistricts,
 }: GetAASummaryRowsParams): AASummaryRow[] {
   const windows = selectedWindow === 'All' ? AAWindowKeys : [selectedWindow];
+  const isFiltered = isAnyCategoryFiltered(categories);
   return rowCategories
-    .filter(x => categories[x.category])
+    .filter(x =>
+      x.category === 'filtered' ? isFiltered : categories[x.category],
+    )
     .map(({ category, phase }) => ({
       category,
       phase,
