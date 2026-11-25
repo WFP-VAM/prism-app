@@ -90,6 +90,7 @@ export function buildAvailableFloodDatesFromDatesJson(
         displayDate: dt,
         queryDate: dt,
         color: getFloodRiskColor(status),
+        severity: status,
       } as FloodDateItem;
     })
     .filter(Boolean) as FloodDateItem[];

@@ -3,6 +3,7 @@ import { DateItem } from 'config/types';
 // Extended DateItem for flood data with color coding
 export type FloodDateItem = DateItem & {
   color?: string;
+  severity?: AAFloodRiskLevelType;
 };
 
 // Flood risk levels based on the sample data

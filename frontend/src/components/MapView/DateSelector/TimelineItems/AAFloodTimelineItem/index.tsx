@@ -23,12 +23,22 @@ function AAFloodTimelineItem({ currentDate }: AAFloodTimelineItemProps) {
     return null;
   }
   const severityColor = dateInfo?.color || '#4CAF50';
+  // Taller mark = higher severity, same idea as the storm ticks, so the
+  // date bar is readable without relying on color alone.
+  const barHeight =
+    dateInfo?.severity === 'Severe'
+      ? 24
+      : dateInfo?.severity === 'Moderate'
+        ? 20
+        : dateInfo?.severity === 'Bankfull'
+          ? 16
+          : 12;
 
   return (
     <div
       style={{
         position: 'absolute',
-        height: 24,
+        height: barHeight,
         width: TIMELINE_ITEM_WIDTH - 1,
         pointerEvents: 'none',
         top: 0,

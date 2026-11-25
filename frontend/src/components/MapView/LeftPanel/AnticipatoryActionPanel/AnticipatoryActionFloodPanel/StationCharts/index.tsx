@@ -550,8 +550,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: '2rem',
       height: 'calc(100vh - 130px)',
       maxHeight: 'calc(100vh - 130px)',
-      // Above the app bar, so the map legend (rendered inside it) sits behind this panel.
-      zIndex: theme.zIndex.modal,
+      // Under the nav bar (drawer + 1). Above the map legend, which is portaled
+      // below appBar so it does not cover this panel.
+      zIndex: theme.zIndex.appBar,
       boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
       overflow: 'hidden',
       display: 'flex',
@@ -699,7 +700,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gap: '0.5rem',
     },
     statusChip: {
-      fontFamily: 'inherit',
+      fontFamily: CHART_FONT,
       fontSize: 14,
       fontWeight: 700,
       borderRadius: 999,
