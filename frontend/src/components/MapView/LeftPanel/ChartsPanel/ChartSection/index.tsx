@@ -103,6 +103,7 @@ const ChartSection = memo(
       chartDataset,
       isLoading,
       error,
+      isUnavailable,
       chartConfig,
       chartTitle,
       chartSubtitle,
@@ -294,6 +295,15 @@ const ChartSection = memo(
           </div>
         );
       }
+      if (isUnavailable) {
+        return (
+          <Box className={classes.errorContainer}>
+            <Typography component="p" variant="h4">
+              {`${t(chartLayer.title)}: ${t('Chart data is not available for this area')}`}
+            </Typography>
+          </Box>
+        );
+      }
       if (error) {
         return (
           <Box className={classes.errorContainer}>
@@ -322,6 +332,7 @@ const ChartSection = memo(
     }, [
       isLoading,
       error,
+      isUnavailable,
       extendedChartDataset,
       overriddenConfig,
       classes.loading,

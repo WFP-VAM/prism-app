@@ -33,6 +33,7 @@ import {
   getAdminNameDictForLanguage,
 } from 'utils/admin-name-utils';
 import { getChartAdminBoundaryParams } from 'utils/admin-utils';
+import { getChartAdminCode } from 'utils/chart-admin-code';
 import { getLatestPeriodRange, getTimeInMilliseconds } from 'utils/date-utils';
 import { getPossibleDatesForLayer } from 'utils/server-utils';
 import {
@@ -417,6 +418,8 @@ export interface UseChartDataReturn {
   chartDataset: TableData | undefined;
   isLoading: boolean;
   error: string | undefined;
+  /** True when the selected area has no HDC id at this level; no request is made. */
+  isUnavailable: boolean;
   chartConfig: ChartConfig | null;
   chartTitle: string;
   chartSubtitle: string;
@@ -454,11 +457,31 @@ export const useChartData = (
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
+  const adminCode = useMemo(
+    () =>
+      chartLayer?.chartData && adminProperties
+        ? getChartAdminCode(
+            chartLayer,
+            adminProperties,
+            adminLevel,
+            countryAdmin0Id,
+          )
+        : undefined,
+    [chartLayer, adminProperties, adminLevel, countryAdmin0Id],
+  );
+
+  // The selected area has no HDC id at this level (e.g. a null dv_adm2_id),
+  // so skip the request rather than letting the stats API fail.
+  const isUnavailable =
+    Boolean(chartLayer?.chartData && adminProperties) &&
+    adminCode === undefined;
+
   const requestParams = useMemo<AdminBoundaryRequestParams | null>(() => {
     if (
       !chartLayer ||
       !adminProperties ||
       !chartLayer.chartData ||
+      adminCode === undefined ||
       startDate === null ||
       endDate === null
     ) {
@@ -470,19 +493,11 @@ export const useChartData = (
       adminProperties,
       adminNameDict,
     );
-    const { levels } = chartLayer.chartData;
-    const levelsDict = Object.fromEntries(levels.map(x => [x.level, x.id]));
-
-    const adminKey = levelsDict[adminLevel.toString()];
-
-    const { code: adminCode } = params.boundaryProps[adminKey] || {
-      code: countryAdmin0Id ?? appConfig.countryAdmin0Id,
-    };
 
     return {
       ...params,
       level: adminLevel.toString(),
-      adminCode: adminCode || countryAdmin0Id || appConfig.countryAdmin0Id,
+      adminCode,
       startDate,
       endDate,
     };
@@ -492,7 +507,7 @@ export const useChartData = (
     adminLevel,
     startDate,
     endDate,
-    countryAdmin0Id,
+    adminCode,
     i18nLocale.resolvedLanguage,
     adminNameDict,
   ]);
@@ -601,9 +616,10 @@ export const useChartData = (
   ]);
 
   return {
-    chartDataset,
-    isLoading,
-    error,
+    chartDataset: isUnavailable ? undefined : chartDataset,
+    isLoading: isUnavailable ? false : isLoading,
+    error: isUnavailable ? undefined : error,
+    isUnavailable,
     chartConfig,
     chartTitle,
     chartSubtitle,

@@ -1,12 +1,12 @@
 {
   "admin_boundaries": {
     "type": "boundary",
-    "path": "data/zambia/zmb_admbnda_adm2_dmmu_20201124_dv.json",
+    "path": "data/zambia/zmb_adm2_2026.geojson",
     "opacity": 0.8,
-    "admin_code": "ADM2_PCODE",
-    "admin_level_codes": ["ADM1_PCODE", "ADM2_PCODE"],
-    "admin_level_names": ["ADM1_EN", "ADM2_EN"],
-    "admin_level_local_names": ["ADM1_EN", "ADM2_EN"],
+    "admin_code": "adm2_id",
+    "admin_level_codes": ["adm1_id", "adm2_id"],
+    "admin_level_names": ["adm1_name", "adm2_name"],
+    "admin_level_local_names": ["adm1_name", "adm2_name"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -20,12 +20,12 @@
   },
   "admin1_boundaries": {
     "type": "boundary",
-    "path": "data/zambia/zmb_admbnda_adm1_dmmu_20201124_dv.json",
+    "path": "data/zambia/zmb_adm1_2026.geojson",
     "opacity": 0.8,
-    "admin_code": "ADM1_PCODE",
-    "admin_level_codes": ["ADM1_PCODE"],
-    "admin_level_names": ["ADM1_EN"],
-    "admin_level_local_names": ["ADM1_EN"],
+    "admin_code": "adm1_id",
+    "admin_level_codes": ["adm1_id"],
+    "admin_level_names": ["adm1_name"],
+    "admin_level_local_names": ["adm1_name"],
     "styles:": {
       "fill": {
         "fill-opacity": 0
@@ -55,12 +55,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -88,12 +88,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -117,12 +117,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -150,12 +150,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -179,12 +179,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "bar"
@@ -212,12 +212,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -241,12 +241,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "line"
@@ -274,12 +274,12 @@
         {
           "level": "1",
           "id": "dv_adm1_id",
-          "name": "ADM1_EN"
+          "name": "adm1_name"
         },
         {
           "level": "2",
           "id": "dv_adm2_id",
-          "name": "ADM2_EN"
+          "name": "adm2_name"
         }
       ],
       "type": "line"
