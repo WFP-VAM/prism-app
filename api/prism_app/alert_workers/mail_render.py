@@ -3,28 +3,46 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader
 
 _TPL = Path(__file__).resolve().parent / "templates"
 _env = Environment(
     loader=FileSystemLoader(str(_TPL)),
-    autoescape=select_autoescape(["html", "xml", "j2"]),
+    # Escape HTML/XML only; plain-text bodies must keep raw "&" in URLs.
+    autoescape=lambda name: bool(name) and name.endswith((".html.j2", ".xml.j2")),
 )
 
 
 def render_flood_mail(
     *,
     title: str,
-    trigger_status: str,
-    stations_by_status: dict[str, list[str]],
+    trigger_phase: str,
+    trigger_severity: str,
+    station_groups: list[dict[str, Any]],
     redirect_url: str,
+    country_display_name: str = "Mozambique",
+    forecast_attribution_line: str = ("forecast by GloFAS with data processing by WFP"),
+    disclaimer_authority_html: str = (
+        "<strong>INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres)</strong>"
+    ),
+    disclaimer_authority_plain: str = (
+        "INGD (Instituto Nacional de Gestão e Redução do Risco de Desastres)"
+    ),
+    map_alt_country: str = "Mozambique",
 ) -> tuple[str, str]:
     ctx = {
         "title": title,
-        "trigger_status": trigger_status,
-        "stations_by_status": stations_by_status,
+        "trigger_phase": trigger_phase,
+        "trigger_severity": trigger_severity,
+        "station_groups": station_groups,
         "redirect_url": redirect_url,
+        "country_display_name": country_display_name,
+        "forecast_attribution_line": forecast_attribution_line,
+        "disclaimer_authority_html": disclaimer_authority_html,
+        "disclaimer_authority_plain": disclaimer_authority_plain,
+        "map_alt_country": map_alt_country,
     }
     html = _env.get_template("flood_alert.html.j2").render(**ctx)
     text = _env.get_template("flood_alert.txt.j2").render(**ctx)

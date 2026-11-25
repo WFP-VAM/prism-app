@@ -40,9 +40,5 @@ exports[`renders as expected 1`] = `
       class="MuiTouchRipple-root"
     />
   </button>
-  <mock-list
-    class="makeStyles-list-2"
-    disablepadding=""
-  />
 </div>
 `;

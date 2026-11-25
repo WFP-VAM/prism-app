@@ -40,6 +40,8 @@ from prism_app.alert_workers.aa_flood import (
     fetch_flood_dates_json,
     flood_prism_url,
     latest_flood_date,
+    status_phase,
+    status_severity,
 )
 from prism_app.alert_workers.aa_storm import build_prism_storm_url
 from prism_app.alert_workers.browser_shot import Crop, capture_screenshot_from_url
@@ -114,10 +116,8 @@ def test_e2e_ethereal_flood_alert_with_real_map(
         entry = dates.get(latest) if isinstance(dates, dict) else {}
         if os.environ.get("PRISM_E2E_FLOOD_DATE"):
             trigger = os.environ.get("PRISM_E2E_FLOOD_TRIGGER", "moderate")
-            stations_by_status: dict[str, list[str]] = {}
         else:
             trigger = str((entry or {}).get("trigger_status") or "moderate")
-            stations_by_status = {}
 
     day = _format_date(latest, "YYYY-MM-DD")
     redirect = flood_prism_url(base, day)
@@ -138,8 +138,9 @@ def test_e2e_ethereal_flood_alert_with_real_map(
 
     html, text = render_flood_mail(
         title=title,
-        trigger_status=trigger,
-        stations_by_status=stations_by_status,
+        trigger_phase=status_phase(trigger),
+        trigger_severity=status_severity(trigger) or trigger,
+        station_groups=[],
         redirect_url=redirect,
     )
     smtp_mailer.send_email(
