@@ -25,9 +25,18 @@ _UPDATE_LAST = text("UPDATE alert SET last_triggered = :ts WHERE id = :id")
 _AA_SELECT = text(
     """
     SELECT id, country, type::text AS type, emails, prism_url,
-           last_triggered_at, last_ran_at, last_states
+           last_triggered_at, last_ran_at, last_states, metadata
     FROM anticipatory_action_alerts
     WHERE country ILIKE :country AND type = CAST(:atype AS anticipatory_action_alerts_type_enum)
+    """,
+)
+
+_AA_SELECT_BY_TYPE = text(
+    """
+    SELECT id, country, type::text AS type, emails, prism_url,
+           last_triggered_at, last_ran_at, last_states, metadata
+    FROM anticipatory_action_alerts
+    WHERE type = CAST(:atype AS anticipatory_action_alerts_type_enum)
     """,
 )
 
@@ -79,6 +88,14 @@ def update_alert_last_triggered(conn: Any, alert_id: int, ts: Any) -> None:
     conn.execute(_UPDATE_LAST, {"id": alert_id, "ts": ts})
 
 
+def _normalize_aa_row(row: dict[str, Any]) -> dict[str, Any]:
+    if row.get("last_states") and isinstance(row["last_states"], str):
+        row["last_states"] = json.loads(row["last_states"])
+    if row.get("metadata") and isinstance(row["metadata"], str):
+        row["metadata"] = json.loads(row["metadata"])
+    return row
+
+
 def fetch_aa_alerts(conn: Any, country: str, atype: str) -> list[dict[str, Any]]:
     rows = (
         conn.execute(
@@ -88,13 +105,19 @@ def fetch_aa_alerts(conn: Any, country: str, atype: str) -> list[dict[str, Any]]
         .mappings()
         .all()
     )
-    out: list[dict[str, Any]] = []
-    for r in rows:
-        row = dict(r)
-        if row.get("last_states") and isinstance(row["last_states"], str):
-            row["last_states"] = json.loads(row["last_states"])
-        out.append(row)
-    return out
+    return [_normalize_aa_row(dict(r)) for r in rows]
+
+
+def fetch_all_aa_alerts_by_type(conn: Any, atype: str) -> list[dict[str, Any]]:
+    rows = (
+        conn.execute(
+            _AA_SELECT_BY_TYPE,
+            {"atype": atype},
+        )
+        .mappings()
+        .all()
+    )
+    return [_normalize_aa_row(dict(r)) for r in rows]
 
 
 def update_aa_alert(

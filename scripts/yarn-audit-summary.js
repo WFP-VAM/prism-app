@@ -3,16 +3,12 @@
 const { spawnSync } = require('node:child_process');
 
 // No compatible patched release:
-// - image-size <=2.0.2 ICNS DoS (upstream archived). Transitive via
-//   @deck.gl → @loaders.gl → texture-compressor (0.7.x).
-// - sprintf-js through 1.1.3 (latest on npm). Same texture-compressor chain,
-//   via argparse. Format strings are argparse's, not PRISM input.
-// - extract-zip symlink traversal (maintainer unresponsive). Transitive via
-//   puppeteer → @puppeteer/browsers (Chrome zip unpack, not untrusted user archives).
+// - extract-zip symlink traversal. Latest npm is still 2.0.1. Cypress 15 pins
+//   that exact version (Chrome zip unpack, not untrusted user archives).
+//   Cypress 16 drops the dependency; that is a major e2e bump, not done here.
+//   CI audits dependencies only, so this devDependency does not fail the job.
+// sprintf-js GHSA-hp3w-g68c-fv3c was withdrawn (Oct 2026). Yarn no longer reports it.
 const IGNORE_ADVISORIES = new Set([
-  'GHSA-w3rx-r6r6-pgpr', // CVE-2025-71330 image-size
-  'GHSA-5p2g-fcmc-qvqq', // CVE-2025-71329 image-size
-  'GHSA-hp3w-g68c-fv3c', // CVE-2026-97058 sprintf-js
   'GHSA-jmr9-qjv8-65gv', // CVE-2026-56876 extract-zip
 ]);
 

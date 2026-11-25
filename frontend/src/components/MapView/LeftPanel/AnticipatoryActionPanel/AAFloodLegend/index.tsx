@@ -6,10 +6,14 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Visibility } from '@material-ui/icons';
-import { AAFloodColors } from 'components/MapView/LeftPanel/AnticipatoryActionPanel/AnticipatoryActionFloodPanel/constants';
-import { getFloodRiskColor } from 'context/anticipatoryAction/AAFloodStateSlice/utils';
+import { useFilteredFloodStations } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/useFilteredFloodStations';
+import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { black } from 'muiTheme';
+import { useSelector } from 'react-redux';
+
+import { FloodStatusIcon } from '../FloodStatusIcon';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -50,6 +54,29 @@ const useStyles = makeStyles(() =>
       height: '12px',
       borderRadius: '50%',
       flexShrink: 0,
+      boxSizing: 'border-box',
+    },
+    phaseBadge: {
+      width: 18,
+      height: 18,
+      borderRadius: '50%',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+    },
+    phaseIcon: {
+      fontSize: 13,
+    },
+    groupTitle: {
+      fontWeight: 600,
+      fontSize: '0.85rem',
+      color: '#6b6b6b',
+      margin: '0.65rem 0 0.35rem',
+      whiteSpace: 'nowrap',
+    },
+    groupHint: {
+      fontWeight: 500,
     },
     trendTriangle: {
       width: 0,
@@ -82,30 +109,30 @@ const useStyles = makeStyles(() =>
   }),
 );
 
+const PHASE_SEVERITIES = ['Severe', 'Moderate', 'Bankfull'] as const;
+
 function AAFloodLegend() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
+  const { stationSummaryData } = useSelector(AAFloodDataSelector);
+  const { startDate } = useSelector(dateRangeSelector);
+  // Summaries are cached across dates. Judge the day on screen, not leftovers
+  // from a date visited earlier.
+  const summaries = useFilteredFloodStations(stationSummaryData, startDate);
+  // Wide legacy files have a severity only. Active and Readiness do not apply.
+  const isLegacy =
+    summaries.length > 0 && summaries.every(station => station.legacy);
 
-  const categories = [
+  const phases = [
     {
-      color: getFloodRiskColor('Severe'),
-      label: 'Severe',
+      label: 'Active',
+      hint: '(activation trigger)',
+      variant: 'alert' as const,
     },
     {
-      color: getFloodRiskColor('Moderate'),
-      label: 'Moderate',
-    },
-    {
-      color: getFloodRiskColor('Bankfull'),
-      label: 'Bankfull',
-    },
-    {
-      color: getFloodRiskColor('Not exceeded'),
-      label: 'Not exceeded',
-    },
-    {
-      color: AAFloodColors.riskLevels.noData,
-      label: 'No data',
+      label: 'Readiness',
+      hint: '(readiness trigger)',
+      variant: 'clock' as const,
     },
   ];
 
@@ -128,17 +155,49 @@ function AAFloodLegend() {
         {t('Riverine flood forecast')}
       </Typography>
 
-      {categories.map(category => (
-        <div key={category.label} className={classes.itemWrapper}>
-          <div
-            className={classes.categoryCircle}
-            style={{ backgroundColor: category.color }}
-          />
-          <Typography className={classes.itemText}>
-            {t(category.label)}
-          </Typography>
-        </div>
-      ))}
+      {isLegacy
+        ? PHASE_SEVERITIES.map(severity => (
+            <div key={severity} className={classes.itemWrapper}>
+              <FloodStatusIcon riskLevel={severity} size={12} />
+              <Typography className={classes.itemText}>
+                {t(severity)}
+              </Typography>
+            </div>
+          ))
+        : phases.map(({ label, hint, variant }) => (
+            <div key={label}>
+              <Typography className={classes.groupTitle}>
+                {`${t(label)} `}
+                <span className={classes.groupHint}>{t(hint)}</span>
+              </Typography>
+              {PHASE_SEVERITIES.map(severity => (
+                <div
+                  key={`${label}-${severity}`}
+                  className={classes.itemWrapper}
+                >
+                  <FloodStatusIcon
+                    phase={variant === 'alert' ? 'activation' : 'readiness'}
+                    riskLevel={severity}
+                    size={18}
+                  />
+                  <Typography className={classes.itemText}>
+                    {`${t(label)} — ${t(severity)}`}
+                  </Typography>
+                </div>
+              ))}
+            </div>
+          ))}
+
+      <div className={classes.itemWrapper} style={{ marginTop: '0.65rem' }}>
+        <FloodStatusIcon riskLevel="Not exceeded" size={12} />
+        <Typography className={classes.itemText}>
+          {t('Not exceeded')}
+        </Typography>
+      </div>
+      <div className={classes.itemWrapper}>
+        <FloodStatusIcon riskLevel="No data" size={12} />
+        <Typography className={classes.itemText}>{t('No data')}</Typography>
+      </div>
 
       <Divider className={classes.divider} />
 
