@@ -246,10 +246,6 @@ exports[`renders as expected 1`] = `
               class="MuiTouchRipple-root"
             />
           </button>
-          <mock-list
-            class="makeStyles-list-25"
-            disablepadding=""
-          />
           <mock-printimage />
           <a
             aria-disabled="false"
