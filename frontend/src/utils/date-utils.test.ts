@@ -10,6 +10,7 @@ import {
   getFormattedDate,
   getLatestPeriodRange,
   getTimeInMilliseconds,
+  latestSelectableDate,
   StartEndDate,
 } from './date-utils';
 
@@ -243,6 +244,33 @@ describe('can find closest date', () => {
     ],
     result: '2023-12-11T12:00:00.000Z',
   };
+});
+
+describe('latestSelectableDate', () => {
+  const now = Date.UTC(2026, 10, 21, 12);
+
+  test('empty list returns now', () => {
+    expect(latestSelectableDate([], now).getTime()).toBe(now);
+  });
+
+  test('all past dates return now', () => {
+    const past = [
+      Date.UTC(2026, 10, 1, 12),
+      new Date(Date.UTC(2026, 10, 11, 12)),
+    ];
+    expect(latestSelectableDate(past, now).getTime()).toBe(now);
+  });
+
+  test('future dates return the latest timestamp', () => {
+    const dates = [
+      Date.UTC(2026, 10, 11, 12),
+      new Date(Date.UTC(2026, 10, 25, 12)),
+      Date.UTC(2026, 10, 21, 12),
+    ];
+    expect(latestSelectableDate(dates, now).getTime()).toBe(
+      Date.UTC(2026, 10, 25, 12),
+    );
+  });
 });
 
 describe('getLatestPeriodRange', () => {
