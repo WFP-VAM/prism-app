@@ -6,8 +6,9 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Visibility } from '@material-ui/icons';
+import { useFilteredFloodStations } from 'components/MapView/Layers/AnticipatoryActionFloodLayer/useFilteredFloodStations';
 import { AAFloodDataSelector } from 'context/anticipatoryAction/AAFloodStateSlice';
-import { FloodStation } from 'context/anticipatoryAction/AAFloodStateSlice/types';
+import { dateRangeSelector } from 'context/mapStateSlice/selectors';
 import { useSafeTranslation } from 'i18n';
 import { black } from 'muiTheme';
 import { useSelector } from 'react-redux';
@@ -114,9 +115,10 @@ function AAFloodLegend() {
   const classes = useStyles();
   const { t } = useSafeTranslation();
   const { stationSummaryData } = useSelector(AAFloodDataSelector);
-  const summaries = Object.values(stationSummaryData).filter(
-    (station): station is FloodStation => Boolean(station),
-  );
+  const { startDate } = useSelector(dateRangeSelector);
+  // Summaries are cached across dates. Judge the day on screen, not leftovers
+  // from a synthetic date visited earlier.
+  const summaries = useFilteredFloodStations(stationSummaryData, startDate);
   // Wide legacy files have a severity only. Active and Readiness do not apply.
   const isLegacy =
     summaries.length > 0 && summaries.every(station => station.legacy);
