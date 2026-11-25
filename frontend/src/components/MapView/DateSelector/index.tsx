@@ -45,6 +45,7 @@ import {
   dateStrToUpperCase,
   dateWithoutTime,
   getFormattedDate,
+  latestSelectableDate,
 } from 'utils/date-utils';
 import useLayers from 'utils/layers-utils';
 import { DateFormat } from 'utils/name-utils';
@@ -143,7 +144,7 @@ const DateSelector = memo(() => {
   const xsDown = useMediaQuery(theme.breakpoints.down('xs'));
 
   const maxDate = useMemo(
-    () => new Date(Math.max(...availableDates, new Date().getTime())),
+    () => latestSelectableDate(availableDates),
     [availableDates],
   );
 
