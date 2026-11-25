@@ -151,7 +151,15 @@ const DateSelector = memo(() => {
   const today = new Date();
   today.setUTCHours(12, 0, 0, 0); // Normalize today's date
 
-  const timeLine = useRef<HTMLDivElement>(null);
+  const timeLine = useRef<HTMLDivElement | null>(null);
+  // Tracked in state so the width observer attaches whenever the bar mounts.
+  // The selector renders null while dates load (e.g. AA flood data), so the
+  // node can appear later without any other dependency changing.
+  const [timeLineNode, setTimeLineNode] = useState<HTMLDivElement | null>(null);
+  const setTimeLineRef = useCallback((node: HTMLDivElement | null) => {
+    timeLine.current = node;
+    setTimeLineNode(node);
+  }, []);
   const [timeLineWidth, setTimeLineWidth] = useState(0);
 
   const { t } = useSafeTranslation();
@@ -299,8 +307,9 @@ const DateSelector = memo(() => {
   );
 
   useLayoutEffect(() => {
-    const node = timeLine.current;
+    const node = timeLineNode;
     if (!node) {
+      setTimeLineWidth(0);
       return undefined;
     }
     const update = () => setTimeLineWidth(node.offsetWidth);
@@ -308,7 +317,7 @@ const DateSelector = memo(() => {
     const observer = new ResizeObserver(update);
     observer.observe(node);
     return () => observer.disconnect();
-  }, [dateRange.length, areLayerDatesLoading]);
+  }, [timeLineNode]);
 
   useLayoutEffect(() => {
     // Width is 0 before the bar is laid out. Shifting then parks the cursor
@@ -830,7 +839,7 @@ const DateSelector = memo(() => {
               <ChevronLeft />
             </Button>
           )}
-          <Grid className={classes.dateContainer} ref={timeLine}>
+          <Grid className={classes.dateContainer} ref={setTimeLineRef}>
             <Draggable
               axis="x"
               handle={`#${TIMELINE_ID}`}
