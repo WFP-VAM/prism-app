@@ -896,7 +896,7 @@ async function main(): Promise<void> {
       `1. Add country-specific layers if needed in frontend/src/config/${config.countrySlug}/layers.json`,
     );
     console.log(
-      `2. Upload boundary file to S3: prism-admin-boundaries/${config.boundaryFile || config.countrySlug}`,
+      `2. Place the boundary file in frontend/public/data (local raster analysis sends this GeoJSON to the API)`,
     );
     console.log(
       `3. Set REACT_APP_COUNTRY=${config.countrySlug} environment variable`,
