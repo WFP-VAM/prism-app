@@ -3389,5 +3389,140 @@
     "start_date": "2020-12-01",
     "end_date": "2021-07-31",
     "opacity": 0.7
+  },
+  "spi_1m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r1s",
+          "label": "SPI 1-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_2m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r2s",
+          "label": "SPI 2-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_3m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r3s",
+          "label": "SPI 3-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_6m": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "r6s",
+          "label": "SPI 6-month",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
+  },
+  "spi_1y": {
+    "chart_data": {
+      "url": "https://api.earthobservation.vam.wfp.org/stats/admin",
+      "fields": [
+        {
+          "key": "rys",
+          "label": "SPI 1-year",
+          "minValue": -3,
+          "maxValue": 3,
+          "color": "#375692"
+        }
+      ],
+      "levels": [
+        {
+          "level": "1",
+          "id": "dataviz_adm1_id",
+          "name": "adm1_name"
+        },
+        {
+          "level": "2",
+          "id": "dataviz_adm2_id",
+          "name": "adm2_name"
+        }
+      ],
+      "type": "line"
+    }
   }
 }

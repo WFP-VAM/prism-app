@@ -293,10 +293,15 @@ export const fetchHDC = async (
 };
 
 // HDC API expects a parameter which depends on the layer
-// rainfall = rfh; ndvi = vim; blended = rfb
+// rainfall = rfh; ndvi = vim; blended = rfb; spi = rxs
 const getVamParam = (serverLayerName: string): string => {
   if (serverLayerName.includes('vim') || serverLayerName.includes('viq')) {
     return 'vim';
+  }
+  // SPI layers, e.g. r1s_dekad, r3s_dekad, rys_dekad
+  const spiLayers = ['r1s', 'r2s', 'r3s', 'r6s', 'r9s', 'rys'];
+  if (spiLayers.some(layer => serverLayerName.includes(`${layer}_dekad`))) {
+    return 'rxs';
   }
   if (serverLayerName.includes('blended')) {
     return 'rfb';
